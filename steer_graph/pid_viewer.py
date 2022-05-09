@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import rclpy
+import time
 from rclpy.node import Node
 from ichthus_can_msgs.msg import Pid
 from std_msgs.msg import Float64
@@ -16,34 +17,36 @@ class Steer_graph(Node):
       Float64, "ref_ang", self.ref_callback, 10)
     self.whl_ang_subs = self.create_subscription(
       Float64MultiArray, "SAS11", self.whl_callback, 10)
+    self.start_time = time.time()
     self.whl_ang_axis = []
-    self.whl_index_axis = []
-    self.whl_index = 0
+    self.whl_time_axis = []
     self.ref_ang = 0
     self.real_ang = 0
     self.real_max_ang = 30
     self.str_ang= 0
     self.str_max_ang = 350
     self.ref_subs
+    self.time = time.time()
     self.fig = plt.figure()
 
-  def whl_callback(self, data): 
+  def whl_callback(self, data):
+    arrive_time = time.time()
+    time_index = arrive_time - self.start_time
     curr_ang = 0
     idx = 0
-    self.whl_index = self.whl_index + 1
     for idx in range (1):
       curr_ang = data.data[idx]
     self.real_ang = self.real_max_ang * curr_ang / self.str_max_ang
     self.whl_ang_axis.append(self.real_ang)
     #self.whl_ang_axis.append(curr_ang)
-    self.whl_index_axis.append(self.whl_index)
+    self.whl_time_axis.append(time_index)
 
     #plt.yscale('linear')
     plt.xlabel("Time", fontsize=14)
     plt.ylabel("Wheel Angle", fontsize=14)
     plt.axhline(self.ref_ang, color="red", linestyle="-", label="Ref")
     plt.legend()
-    plt.plot(self.whl_index_axis, self.whl_ang_axis, color="black")
+    plt.plot(self.whl_time_axis, self.whl_ang_axis, color="black")
     plt.draw()
     plt.pause(0.2)
     self.fig.clear()
