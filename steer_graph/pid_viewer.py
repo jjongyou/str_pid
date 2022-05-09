@@ -20,6 +20,10 @@ class Steer_graph(Node):
     self.whl_index_axis = []
     self.whl_index = 0
     self.ref_ang = 0
+    self.real_ang = 0
+    self.real_max_ang = 30
+    self.str_ang= 0
+    self.str_max_ang = 350
     self.ref_subs
     self.fig = plt.figure()
 
@@ -29,7 +33,9 @@ class Steer_graph(Node):
     self.whl_index = self.whl_index + 1
     for idx in range (1):
       curr_ang = data.data[idx]
-    self.whl_ang_axis.append(curr_ang)
+    self.real_ang = self.real_max_ang * curr_ang / self.str_max_ang
+    self.whl_ang_axis.append(self.real_ang)
+    #self.whl_ang_axis.append(curr_ang)
     self.whl_index_axis.append(self.whl_index)
 
     #plt.yscale('linear')
