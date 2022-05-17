@@ -18,35 +18,29 @@ class Steer_graph(Node):
     self.whl_ang_subs = self.create_subscription(
       Float64MultiArray, "SAS11", self.whl_callback, 10)
     self.start_time = time.time()
-    self.whl_ang_axis = []
-    self.whl_time_axis = []
+    self.str_ang_axis = []
+    self.str_time_axis = []
+    self.ref_ang_axis = []
     self.ref_ang = 0
-    self.real_ang = 0
-    self.real_max_ang = 30
-    self.str_ang= 0
-    self.str_max_ang = 350
     self.ref_subs
-    self.time = time.time()
     self.fig = plt.figure()
 
-  def whl_callback(self, data):
+  def str_callback(self, data):
     arrive_time = time.time()
     time_index = arrive_time - self.start_time
+    print(time_index)
     curr_ang = 0
     idx = 0
     for idx in range (1):
       curr_ang = data.data[idx]
-    self.real_ang = self.real_max_ang * curr_ang / self.str_max_ang
-    self.whl_ang_axis.append(self.real_ang)
-    #self.whl_ang_axis.append(curr_ang)
-    self.whl_time_axis.append(time_index)
+    self.str_ang_axis.append(curr_ang)
+    self.str_time_axis.append(time_index)
+    self.ref_ang_axis.append(self.ref_ang)
 
-    #plt.yscale('linear')
-    plt.xlabel("Time", fontsize=14)
-    plt.ylabel("Wheel Angle", fontsize=14)
-    plt.axhline(self.ref_ang, color="red", linestyle="-", label="Ref")
-    plt.legend()
-    plt.plot(self.whl_time_axis, self.whl_ang_axis, color="black")
+    plt.xlabel("Time (Seconds)", fontsize=14)
+    plt.ylabel("Steer Angle", fontsize=14)
+    plt.plot(self.whl_time_axis, self.ref_ang_axis, color="red", label="Ref")
+    plt.plot(self.whl_time_axis, self.str_ang_axis, color="black", label="Vel")
     plt.draw()
     plt.pause(0.2)
     self.fig.clear()
