@@ -1,6 +1,6 @@
 from setuptools import setup
 
-package_name = 'steer_graph'
+package_name = 'str_pid'
 
 setup(
     name=package_name,
@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'steer_graph = steer_graph.pid_viewer:main',
+            'str_pid = str_pid.pid_viewer:main',
         ],
     },
 )
